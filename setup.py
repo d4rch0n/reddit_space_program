@@ -41,12 +41,13 @@ setup(
         # protobuf 3.0.0 alpha breaks with a weird symbol_database error
         'protobuf==2.6.1',
         # Remote procedure call for kerbal space program
-        'krpc',
+        #'krpc',
     ],
     entry_points = {
         'console_scripts': [
             'rsp = reddit_space_program:main',
             'rsp-tweet = reddit_space_program.tweet:main',
+            'rsp-launch = reddit_space_program.launcher:main',
         ],
     },
     #package_data = {
