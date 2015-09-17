@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 from subprocess import call
 import shlex
 from uuid import uuid1
@@ -16,8 +17,9 @@ def connect():
     return ImgurClient(**config.imgur)
 
 def screenshot(window):
-    path = os.path.join(screenshot_dir, uuid1() + '.jpg')
+    path = os.path.join(screenshot_dir, str(uuid1()) + '.jpg')
     call(shlex.split('import -window {} {}'.format(window, path)))
+    return path
 
 def upload(conn, path):
     return conn.upload_from_path(path, anon=False)['link']
@@ -30,7 +32,8 @@ def main():
     conn = connect()
     path = screenshot(args.window)
     link = upload(conn, path)
-    print(link)
+    print('Dumped to {}'.format(path))
+    print('Link: {}'.format(link))
 
 if __name__ == '__main__':
     main()
