@@ -16,7 +16,7 @@ if not os.path.exists(screenshot_dir):
 def connect():
     return ImgurClient(**config.imgur)
 
-def screenshot(window):
+def screenshot(window=config.window):
     path = os.path.join(screenshot_dir, str(uuid1()) + '.jpg')
     call(shlex.split('import -window {} {}'.format(window, path)))
     return path
@@ -30,7 +30,7 @@ def main():
     parser.add_argument('--window', '-w', default=config.window)
     args = parser.parse_args()
     conn = connect()
-    path = screenshot(args.window)
+    path = screenshot(window=args.window)
     link = upload(conn, path)
     print('Dumped to {}'.format(path))
     print('Link: {}'.format(link))
