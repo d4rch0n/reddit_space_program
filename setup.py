@@ -40,7 +40,13 @@ setup(
     install_requires=[
         # protobuf 3.0.0 alpha breaks with a weird symbol_database error
         'protobuf==2.6.1',
+        # for tweeting
+        'python-twitter',
+        # for image uploading
+        'imgurpython',
         # Remote procedure call for kerbal space program
+        # XXX DISABLED because it asks for later protobuf version which breaks
+        # please install manually
         #'krpc',
     ],
     entry_points = {
