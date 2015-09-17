@@ -38,6 +38,8 @@ setup(
         'Programming Language :: Python',
     ],
     install_requires=[
+        # protobuf 3.0.0 alpha breaks with a weird symbol_database error
+        'protobuf==2.6.1',
     ],
     entry_points = {
         'console_scripts': [
