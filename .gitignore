@@ -1,0 +1,6 @@
+syntax: glob
+*.pyc
+*.log
+build/*
+reddit_space_program.egg-info/*
+dist/*

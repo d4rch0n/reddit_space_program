@@ -1,0 +1,2 @@
+include LICENSE README.rst
+recursive-include reddit_space_program *.py
