@@ -47,11 +47,11 @@ Usage
 
 Simply run it:
 
-    $ reddit_space_program
+    $ rsp-launch $path_to_mission_module $name_of_craft
 
 Use --help/-h to view info on the arguments:
 
-    $ reddit_space_program --help
+    $ rsp-launch --help
 
 Release Notes
 -------------
