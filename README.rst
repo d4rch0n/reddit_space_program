@@ -17,8 +17,7 @@ a crafts/ directory with your testing crafts, each having a
 
 The config will be loaded as a vessel config for the code.
 
-Example
--------
+Example mission module layout::
 
 myProject/
     README.txt
@@ -33,7 +32,7 @@ myProject/
         myship.craft
         myship_config.yml
 
-The ships config.yml can have any variables you want, but define these at the root:
+The ships config.yml can have any variables you want, but define these at the root::
 
 name: foo
 description: foo is a craft!
