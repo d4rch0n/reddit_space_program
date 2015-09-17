@@ -18,7 +18,7 @@ setup(
     url = "https://www.bitbucket.org/d4rch0n/reddit_space_program",
     packages=['reddit_space_program'],
     package_dir={'reddit_space_program': 'reddit_space_program'},
-    long_description=read('README.rst'),
+    long_description=read('README.md'),
     classifiers=[
         #'Development Status :: 1 - Planning',
         #'Development Status :: 2 - Pre-Alpha',
