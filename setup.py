@@ -40,6 +40,8 @@ setup(
     install_requires=[
         # protobuf 3.0.0 alpha breaks with a weird symbol_database error
         'protobuf==2.6.1',
+        # Remote procedure call for kerbal space program
+        'krpc',
     ],
     entry_points = {
         'console_scripts': [
