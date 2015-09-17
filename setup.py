@@ -41,7 +41,8 @@ setup(
     ],
     entry_points = {
         'console_scripts': [
-            'reddit_space_program = reddit_space_program:main',
+            'rsp = reddit_space_program:main',
+            'rsp-tweet = reddit_space_program.tweet:main',
         ],
     },
     #package_data = {
