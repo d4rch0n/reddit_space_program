@@ -26,7 +26,7 @@ def main():
     print('Description: ' + craft_cfg.description + '\n')
     sys.path = [args.mission_dir] + sys.path
     mission_mod = importlib.import_module('mission')
-    mission_mod.main()
+    mission_mod.main(mission_cfg, craft_cfg)
 
 if __name__ == '__main__':
     main()
