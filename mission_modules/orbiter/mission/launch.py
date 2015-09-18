@@ -62,7 +62,7 @@ def shot_tweet(msg):
     if twit_conn and img_conn:
         tweet(twit_conn, msg + '\n' + link1)
 
-def maintain(vessel, mv, **kwargs):
+def maintain(vessel, mv, time_to_apo=None, **kwargs):
     limits = {}
     for kwarg, func in kwargs.items():
         if not kwarg.endswith('_min') and not kwarg.endswith('_max'):
@@ -72,10 +72,15 @@ def maintain(vessel, mv, **kwargs):
     while True:
         vel = vessel.flight(vessel.orbit.body.reference_frame).velocity
         vvel = vel[-1] * -1
-        if vvel > mv:
-            vessel.control.throttle *= 0.9
-        if vvel < mv:
-            vessel.control.throttle *= 1.1
+        if time_to_apo is not None and vessel.orbit.time_to_apoapsis > time_to_apo:
+            vessel.control.throttle = 0.0
+        else:
+            if vvel > mv:
+                vessel.control.throttle *= 0.9
+            if vvel < mv:
+                if vessel.control.throttle == 0.0:
+                    vessel.control.throttle = 0.1
+                vessel.control.throttle *= 1.1
         done = False
         for kwarg, vals in limits.items():
             func, lminmax = vals
@@ -118,7 +123,8 @@ def stage1(vessel, data):
     if data['apo']() > 78000:
         shot_tweet('...burning to the horizon!')
         turn(vessel, 80)
-        maintain(vessel, 1000, fuel=data['liquid'][0], fuel_min=0.1)
+        maintain(vessel, 1000, time_to_apo=20,
+            fuel=data['liquid'][0], fuel_min=0.1)
     else:
         turn(vessel, 60)
         shot_tweet('out of fuel... will this work??')
@@ -126,7 +132,8 @@ def stage1(vessel, data):
 def stage2(vessel, data):
     vessel.control.activate_next_stage()
     shot_tweet('Were on our final stage! Wish us luck!')
-    maintain(vessel, 10000, fuel=data['liquid'][1], fuel_min=0.1, apo=data['peri'], peri_max=79000)
+    maintain(vessel, 10000, time_to_apo=10,
+        fuel=data['liquid'][1], fuel_min=0.1, apo=data['peri'], peri_max=79000)
 
 def launch(mission_cfg, craft_cfg):
     vessel, data = connect2vessel(craft_cfg)
