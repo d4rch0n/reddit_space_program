@@ -143,9 +143,8 @@ def launch(mission_cfg, craft_cfg):
     stage1(vessel, data)
     stage2(vessel, data)
     vessel.control.activate_next_stage()
-    tweet('Apoapsis: {}\nPeriapsis: {}'.format(data['apo'](), data['peri']()))
+    shot_tweet('Apoapsis: {}\nPeriapsis: {}'.format(int(data['apo']()), int(data['peri']())))
     if data['apo']() > 70000 and data['peri']() > 70000:
-
         shot_tweet('Satellite deployed... looks like we\'re in orbit!')
     else:
         shot_tweet('Satellite deployed... but it\'s not in orbit :(')
