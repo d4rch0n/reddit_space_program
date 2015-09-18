@@ -4,15 +4,20 @@ import sys
 import json
 import twitter
 
-from reddit_space_program import config
+from reddit_space_program import config, TEST_PHASE
 
 def connect():
+    if TEST_PHASE:
+        return True
     return twitter.Api(**config.twitter)
 
 def tweet(conn, msg):
     if len(msg) > 140:
         raise RuntimeError('Message is too long ({})'.format(len(msg)))
-    conn.PostUpdate(msg)
+    if TEST_PHASE:
+        print('Tweet: {}'.format(msg))
+    else:
+        conn.PostUpdate(msg)
 
 def main():
     import argparse

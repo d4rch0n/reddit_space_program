@@ -7,13 +7,15 @@ from uuid import uuid1
 
 from imgurpython import ImgurClient
 
-from reddit_space_program import config
+from reddit_space_program import config, TEST_PHASE
 
 screenshot_dir = config.screenshot_dir or os.path.expanduser('~/kerbal_screenshots')
 if not os.path.exists(screenshot_dir):
     os.makedirs(screenshot_dir)
 
 def connect():
+    if TEST_PHASE:
+        return True
     return ImgurClient(**config.imgur)
 
 def screenshot(window=config.window):
@@ -22,6 +24,8 @@ def screenshot(window=config.window):
     return path
 
 def upload(conn, path):
+    if TEST_PHASE:
+        return path
     return conn.upload_from_path(path, anon=False)['link']
 
 def main():
