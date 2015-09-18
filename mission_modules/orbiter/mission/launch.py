@@ -133,7 +133,7 @@ def stage2(vessel, data):
     vessel.control.activate_next_stage()
     shot_tweet('Were on our final stage! Wish us luck!')
     maintain(vessel, 10000, time_to_apo=10,
-        fuel=data['liquid'][1], fuel_min=0.1, apo=data['peri'], peri_max=79000)
+        fuel=data['liquid'][1], fuel_min=0.1, peri=data['peri'], peri_max=79000)
 
 def launch(mission_cfg, craft_cfg):
     vessel, data = connect2vessel(craft_cfg)
