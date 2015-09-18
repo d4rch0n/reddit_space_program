@@ -13,7 +13,8 @@ from reddit_space_program.tweet import connect as twitter_connect, tweet
 from reddit_space_program.screenshot import connect as imgur_connect, screenshot, upload
 from tinylog import Logger
 
-log = Logger(debug='orbiter_debug.log', console='stdout')
+log = Logger(info='orbiter_debug.log')
+#log = Logger(debug='orbiter_debug.log', console='stdout')
 
 twit_conn = None
 try:
@@ -77,8 +78,8 @@ def maintain(vessel, mv, **kwargs):
             vessel.control.throttle *= 1.1
         done = False
         for kwarg, vals in limits.items():
-            func, limits = vals
-            lmin, lmax = limits
+            func, lminmax = vals
+            lmin, lmax = lminmax
             log.debug('{}: {}'.format(kwarg, func()))
             if lmin is not None and func() < lmin:
                 log.info('{} reached minimum ({})'.format(kwarg, lmin))
@@ -135,8 +136,9 @@ def launch(mission_cfg, craft_cfg):
     stage1(vessel, data)
     stage2(vessel, data)
     vessel.control.activate_next_stage()
+    tweet('Apoapsis: {}\nPeriapsis: {}'.format(data['apo'](), data['peri']()))
     if data['apo']() > 70000 and data['peri']() > 70000:
 
-        shot_tweet('Satellite deployed... Apo: {}, Peri: {}\nlooks like we\'re in orbit!'.format(data['apo'](), data['peri']()))
+        shot_tweet('Satellite deployed... looks like we\'re in orbit!')
     else:
-        shot_tweet('Satellite deployed... but according to apo and peri, it\'s not in orbit :(')
+        shot_tweet('Satellite deployed... but it\'s not in orbit :(')
