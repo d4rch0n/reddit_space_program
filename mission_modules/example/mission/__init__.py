@@ -2,6 +2,6 @@
 '''
 from .launch import launch
 
-def main():
+def main(*args):
     print('Execution starts here')
     launch()
