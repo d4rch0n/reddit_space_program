@@ -1,0 +1,6 @@
+name: Munar Lander
+description: A craft capable of making it to the Mun.
+author_name: d4rch0n
+author_email: d4rch0n@gmail.com
+version: 0.0.1
+num_stages: 3
