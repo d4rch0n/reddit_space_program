@@ -125,7 +125,7 @@ def launch(mission_cfg, craft_cfg):
     maintain(turn_f=static_angle(0), vel=stream['vspeed'], vel_max=100)
     # start to tip
     init_alt = stream['alt']()
-    alt_max = 50000
+    alt_max = 30000
     diff = float(alt_max - init_alt)
     turn_max = 90
     def turn_f():
@@ -135,14 +135,14 @@ def launch(mission_cfg, craft_cfg):
         turn(turn_max * ratio)
     def throttle_f():
         # keep throttle below terminal velocity
+        if stream['liquid'][stage]() < 0.01:
+            spacebar()
         spd = stream['speed']()
         tvel = stream['termv']()
         if spd < tvel:
             throttle(throttle() * 1.005)
         else:
             throttle(throttle() * 0.999)
-        if stream['liquid'][stage]() < 0.01:
-            spacebar()
     maintain(turn_f=turn_f, throttle_f=throttle_f,
         alt=stream['alt'], alt_max=alt_max)
     # Now we're at `alt_max` and `turn_max` degrees AoA
@@ -151,6 +151,12 @@ def launch(mission_cfg, craft_cfg):
     def throttle_f():
         if stream['liquid'][stage]() < 0.01:
             spacebar()
+        apo = stream['apo']()
+        alt = stream['alt']()
+        if alt + 5000 < apo and alt + 10000 > apo:
+            throttle(1)
+        else:
+            throttle(0)
     maintain(turn_f=static_angle(90), throttle_f=throttle_f,
         apo=stream['apo'], apo_max=75000)
     print('Circularize')
@@ -158,11 +164,12 @@ def launch(mission_cfg, craft_cfg):
         if stream['liquid'][stage]() < 0.01:
             spacebar()
         apotime = stream['apotime']()
-        if apotime > 1:
+        if apotime > 8:
             throttle(0)
         else:
-            throttle(0.5)
+            throttle(1)
+    apo = stream['apo']()
     maintain(turn_f=static_angle(90), throttle_f=throttle_f,
-        peri=stream['peri'], peri_max=75000)
+        peri=stream['peri'], peri_max=apo)
     throttle(0)
     print('Orbiting!')
