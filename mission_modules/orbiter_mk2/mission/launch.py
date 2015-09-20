@@ -20,7 +20,11 @@ log = Logger(info='orbiter_debug.log', console='stdout')
 twit_conn = twitter_connect()
 img_conn = imgur_connect()
 
-conn, rframe, vessel, stream = None, None, None, None
+conn = None
+rframe = None
+vessel = None
+stream = None
+last_turn_offset = 0
 stage = 0
 
 def init_globals(craft_cfg):
@@ -54,8 +58,8 @@ def init_globals(craft_cfg):
         ][::-1],
     }
     vessel.auto_pilot.engage()
+    vessel.auto_pilot.target_pitch_and_heading(90, 90)
     vessel.auto_pilot.sas = True
-    #vessel.auto_pilot.reference_frame = rframe
 
 def throttle(t=None):
     if t is None:
@@ -96,8 +100,11 @@ def maintain(turn_f=None, throttle_f=None, **kwargs):
         if done:
             break
 
-def turn(ang_offset):
-    vessel.auto_pilot.target_pitch_and_heading(90 - ang_offset, 90)
+def turn(turn_offset):
+    global last_turn_offset
+    if abs(turn_offset - last_turn_offset) > 0.5:
+        last_turn_offset = turn_offset
+        vessel.auto_pilot.target_pitch_and_heading(90 - turn_offset, 90)
 
 def spacebar():
     global stage
