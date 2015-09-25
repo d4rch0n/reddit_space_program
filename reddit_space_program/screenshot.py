@@ -2,6 +2,7 @@
 
 import os
 import time
+import re
 from subprocess import call, Popen, PIPE, CalledProcessError
 import shlex
 from uuid import uuid1
@@ -14,17 +15,44 @@ screenshot_dir = config.screenshot_dir or os.path.expanduser('~/kerbal_screensho
 if not os.path.exists(screenshot_dir):
     os.makedirs(screenshot_dir)
 
+RE_WINDOW = re.compile(r'xwininfo: Window id: (\S+) "Kerbal Space Program"')
+
+WINDOW = None
+
 def connect():
     if TEST_PHASE:
         return True
     return ImgurClient(**config.imgur)
 
-def screenshot(window=config.window):
+def get_kspwin():
+    global WINDOW
+    if WINDOW is not None:
+        return WINDOW
+    out, err = Popen(shlex.split(
+        'xwininfo -name "Kerbal Space Program"'), 
+        stdout=PIPE, stderr=PIPE).communicate()
+    if err:
+        return None
+    if not out:
+        return None
+    lines = out.splitlines()
+    if len(lines) < 2:
+        raise RuntimeError('Unexpected output from xwininfo (less than 2 lines): {}'.format(out))
+    window_line = lines[1]
+    match = RE_WINDOW.match(window_line)
+    if not match:
+        raise RuntimeError('Unexpected output from xwininfo (doesn\'t match regex): {}'.format(out))
+    WINDOW = match.group(1)
+    return WINDOW
+        
+def screenshot():
+    window = get_kspwin()
     path = os.path.join(screenshot_dir, str(uuid1()) + '.jpg')
     call(shlex.split('import -window {} {}'.format(window, path)))
     return path
 
-def record(window=config.window, output=None, cap_time=5):
+def record(output=None, cap_time=5):
+    window = get_kspwin()
     if output is None:
         output = str(uuid1())
     prog1 = Popen(shlex.split(
@@ -61,10 +89,11 @@ def upload(conn, path):
 def main():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--window', '-w', default=config.window)
     args = parser.parse_args()
+    if get_kspwin() is None:
+        raise RuntimeError('Please launch Kerbal Space Program')
     conn = connect()
-    path = screenshot(window=args.window)
+    path = screenshot()
     link = upload(conn, path)
     print('Dumped to {}'.format(path))
     print('Link: {}'.format(link))
